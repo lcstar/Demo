@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lc.poi.mapper.DoctorMapper">
+	<resultMap id="BaseResultMap" type="com.lc.poi.model.Doctor">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="pwd" jdbcType="VARCHAR" property="pwd" />
+		<result column="mail" jdbcType="VARCHAR" property="mail" />
+		<result column="tel" jdbcType="VARCHAR" property="tel" />
+		<result column="photo" jdbcType="VARCHAR" property="photo" />
+		<result column="birthday" jdbcType="DATE" property="birthday" />
+		<result column="hospital_id" jdbcType="INTEGER" property="hospital_id" />
+		<result column="department_id" jdbcType="INTEGER" property="department_id" />
+		<result column="doctor_type_id" jdbcType="INTEGER" property="doctor_type_id" />
+		<result column="good_at" jdbcType="VARCHAR" property="good_at" />
+		<result column="online_state" jdbcType="BIT" property="online_state" />
+		<result column="has_video" jdbcType="BIT" property="has_video" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="create_time" />
+		<result column="delflag" jdbcType="BIT" property="delflag" />
+		<result column="aver_score" jdbcType="VARCHAR" property="aver_score" />
+		<result column="serve_count" jdbcType="INTEGER" property="serve_count" />
+	</resultMap>
+
+	<select id="getDocs" resultMap="BaseResultMap">
+		select * from doctor_t
+	</select>
+</mapper>
+

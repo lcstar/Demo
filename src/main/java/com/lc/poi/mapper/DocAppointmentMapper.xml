@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lc.poi.mapper.DocAppointmentMapper">
+    <!--
+        Mybatis一对多的简单入门使用：
+        List中的要使用collection标签
+        ofType要指向 一对多的 多的那个类
+        如果两个类中的字段重名的话 要使用别名将两个类分开，要不然mybatis识别不了那个是那个类的属性
+        建议：在使用一对多的时候最好在数据库中执行相应的语句，看是否有重名的情况，
+        或者通过数据库输出的结果的字段来判定是那个类的属性
+        一对多的时候 不能使用resultMap属性
+    -->
+.
+    <resultMap id="userResultMap" type="docAppointmentView">
+        <id column="id" property="id"/>
+        <result column="doc_id" property="docId"/>
+        <result column="appoint_time_start" property="appointTimeStart"
+        />
+        <result column="appoint_time_end" property="appointTimeEnd"
+        />
+        <result column="appointment_num" property="appointmentNum"
+        />
+        <result column="already_num" property="alreadyNum"/>
+        <result column="create_time" property="createTime"/>
+        <result column="delflag" property="delflag"/>
+        <collection property="members" ofType="memberAppointment">
+            <id column="id1" property="id"/>
+            <result column="doc_id1" property="docId"/>
+            <result column="member_id" property="memberId"/>
+            <result column="appointment_id" property="appointmentId"
+            />
+            <result column="status" property="status"/>
+            <result column="create_time1" property="createTime"/>
+            <result column="delflag1" property="delflag"/>
+        </collection>
+        <!--<collection property="members" column="id"-->
+        <!--select="com.lc.poi.model.MemberAppointment">-->
+        <!--</collection>-->
+    </resultMap>
+    <select id="selectOneToMore" resultMap="userResultMap">
+        select doc.*,member.*
+        FROM doc_appointment doc,member_appointment member
+        WHERE doc.id = member.appointment_id
+        AND doc.id = 1
+    </select>
+
+
+    <!--
+        Mybatis 一对多的另外一种实现方式
+        相比于上个方式 个人认为比较方便使用
+        通过conllection标签的select属性 选择执行的select语句
+        通过column来传递参数到select属性中的select语句中
+        而选择的select 语句能够使用resultMap来映射对应的实体类
+        个人而言 相比较与上面的一对多，节省了比较多的代码量。
+    -->
+    <resultMap id="newResultMap" type="docAppointmentView">
+        <id column="id" property="id"/>
+        <result column="doc_id" property="docId"/>
+        <result column="appoint_time_start" property="appointTimeStart"
+        />
+        <result column="appoint_time_end" property="appointTimeEnd"
+        />
+        <result column="appointment_num" property="appointmentNum"
+        />
+        <result column="already_num" property="alreadyNum"/>
+        <result column="create_time" property="createTime"/>
+        <result column="delflag" property="delflag"/>
+        <collection property="members" ofType="memberAppointment" column="id" select="getMemberByAppoint">
+        </collection>
+    </resultMap>
+    <resultMap id="memberMap" type="memberAppointment">
+        <id column="id" property="id"/>
+        <result column="doc_id" property="docId"/>
+        <result column="member_id" property="memberId"/>
+        <result column="appointment_id" property="appointmentId"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="delflag" property="delflag"/>
+    </resultMap>
+    <select id="newGetOneToMore" resultMap="newResultMap">
+        SELECT *
+        from doc_appointment
+        WHERE id = 1
+    </select>
+    <select id="getMemberByAppoint" resultMap="memberMap" parameterType="Integer">
+        SELECT *
+        from member_appointment
+        WHERE appointment_id = #{id}
+    </select>
+
+</mapper>
